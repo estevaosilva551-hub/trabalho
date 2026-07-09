@@ -3,164 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto de Rede Modbus</title>
-
+    <title>Guia Visual de Redes para Automação</title>
     <style>
-        /* 1. ESTILOS GERAIS DA PÁGINA */
+        :root {
+            --primary: #0056b3;
+            --secondary: #e9ecef;
+            --text: #333;
+            --bg: #f8f9fa;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
-            background-color: #eef2f5; /* Fundo levemente acinzentado */
-            color: #2c3e50; /* Cinza escuro para facilitar a leitura */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        /* 2. CAIXA PRINCIPAL (Container) */
-        .container {
-            max-width: 1000px; /* Limita a largura para não esticar muito em telas grandes */
-            margin: 0 auto; /* Centraliza a caixa na tela */
-            background: #ffffff;
-            border-radius: 12px; /* Deixa as pontas da caixa arredondadas */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Sombra elegante */
-            overflow: hidden; /* Garante que nada vaze das bordas arredondadas */
-        }
-
-        /* 3. CABEÇALHO (Header) */
         header {
-            background-color: #2980b9; /* Fundo azul para o topo */
-            color: white; /* Texto branco */
-            padding: 30px;
-            text-align: center;
-        }
-
-        /* 4. SEÇÃO DE CONTEÚDO */
-        .content {
-            padding: 30px;
-        }
-
-        .intro {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        /* 5. ESTRUTURA DOS CRITÉRIOS (Flexbox para alinhar imagem e texto) */
-        .criterio-card {
-            display: flex; /* Coloca os elementos lado a lado */
-            align-items: center; /* Centraliza verticalmente */
-            gap: 20px; /* Espaço entre a imagem e o texto */
-            margin-bottom: 30px; /* Espaço entre os blocos de critérios */
+            background-color: var(--primary);
+            color: white;
             padding: 20px;
-            background-color: #f8f9fa; /* Fundo bem clarinho para cada bloco */
-            border-left: 5px solid #3498db; /* Linha azul decorativa na esquerda */
+            text-align: center;
+        }
+
+        /* Sistema de Abas */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #343a40;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background-color: var(--primary);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cards - Aba 1 */
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
             border-radius: 8px;
-        }
-
-        /* Inverte a ordem de alguns blocos para o layout ficar dinâmico (ziguezague) */
-        .criterio-card.reverse {
-            flex-direction: row-reverse;
-            border-left: none;
-            border-right: 5px solid #e67e22; /* Linha laranja decorativa na direita */
-        }
-
-        /* 6. ESTILOS DAS IMAGENS DENTRO DOS CARTÕES */
-        .criterio-card img {
-            width: 250px; /* Largura fixa para as imagens */
-            height: 180px; /* Altura fixa */
-            object-fit: cover; /* Corta a imagem sem distorcer para caber no tamanho */
-            border-radius: 8px; /* Arredonda as pontas das imagens */
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 300px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        /* 7. ESTILOS DO TEXTO DENTRO DOS CARTÕES */
-        .criterio-texto {
-            flex: 1; /* Faz o texto ocupar todo o espaço restante ao lado da imagem */
+        .card:hover {
+            transform: translateY(-5px);
         }
 
-        .criterio-texto h2 {
-            margin-top: 0;
-            color: #2c3e50;
-            font-size: 1.5em;
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
         }
 
-        ul {
+        .card h3 {
+            text-align: center;
+            margin: 15px 0 5px;
+            color: var(--primary);
+        }
+
+        .card p.click-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            display: none;
+            padding: 15px;
+            background-color: var(--secondary);
+            border-top: 1px solid #ddd;
+            font-size: 14px;
             line-height: 1.5;
         }
 
-        li {
-            margin-bottom: 8px;
+        /* Topologias - Aba 2 */
+        .topo-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        /* 8. ADAPTAÇÃO PARA CELULARES (Responsividade) */
-        @media (max-width: 768px) {
-            .criterio-card, .criterio-card.reverse {
-                flex-direction: column; /* Empilha a imagem em cima do texto no celular */
-                text-align: center;
-            }
-            .criterio-card img {
-                width: 100%; /* Imagem ocupa 100% da largura no celular */
-                height: auto;
-            }
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            background-color: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
         }
+
+        .btn:hover, .btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .topo-details {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex; /* Ready for when it's active */
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .topo-details img {
+            max-width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .topo-text {
+            width: 100%;
+        }
+
+        .topo-text ul {
+            padding-left: 20px;
+        }
+
+        .pro { color: green; font-weight: bold; }
+        .con { color: red; font-weight: bold; }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <header>
-            <h1>Topologia de Redes Industriais</h1>
-            <p>Escolhendo o caminho físico ideal para o protocolo Modbus</p>
-        </header>
+    <header>
+        <h1>Guia Visual de Redes para Automação</h1>
+        <p>Aprenda a infraestrutura de comunicação do chão de fábrica</p>
+    </header>
 
-        <section class="content">
-            
-            <p class="intro">
-                Imagine que você foi contratado para projetar a infraestrutura de comunicação de uma planta industrial. 
-                Os sensores e controladores possuem o mesmo padrão, "falam" a mesma língua (o protocolo <strong>Modbus</strong>), 
-                mas agora você precisa decidir qual "estrada" física (Topologia) eles usarão para enviar essas mensagens. 
-                Para fazer a escolha certa, você deve analisar o cenário com base nos seguintes critérios:
-            </p>
-
-            <article class="criterio-card">
-                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Painel central controlando vários equipamentos">
-                
-                <div class="criterio-texto">
-                    <h2>1. Quantidade de Dispositivos</h2>
-                    <ul>
-                        <li><strong>Cenário A:</strong> Você precisa conectar apenas <strong>um</strong> computador diretamente a <strong>um</strong> único sensor de bancada.</li>
-                        <li><strong>Cenário B:</strong> Você precisa que um único controlador central (Mestre) monitore <strong>vários</strong> motores e medidores de energia (Escravos) espalhados pelo galpão.</li>
-                    </ul>
-                </div>
-            </article>
-
-            <article class="criterio-card reverse">
-                <img src="https://images.unsplash.com/photo-1621360841013-c76831f1e35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cabos industriais percorrendo longas distâncias">
-                
-                <div class="criterio-texto">
-                    <h2>2. Distância da Instalação</h2>
-                    <ul>
-                        <li>Os equipamentos estão próximos uns dos outros (dentro de um mesmo painel ou a menos de <strong>15 metros</strong>)?</li>
-                        <li>Ou os equipamentos estão em pontos distantes, exigindo cabos que percorrem <strong>centenas de metros</strong> (até 1200m)?</li>
-                    </ul>
-                </div>
-            </article>
-
-            <article class="criterio-card">
-                <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Indústria pesada com faíscas e motores potentes">
-                
-                <div class="criterio-texto">
-                    <h2>3. Nível de Interferência (Ruído Elétrico)</h2>
-                    <ul>
-                        <li>O ambiente é limpo, como um escritório ou laboratório?</li>
-                        <li>Ou existem motores potentes, inversores de frequência e cabos de alta tensão por perto, que geram "faíscas" invisíveis de interferência magnética no sinal?</li>
-                    </ul>
-                </div>
-            </article>
-
-        </section>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'cabos')">Cabos Industriais</button>
+        <button class="tab-btn" onclick="openTab(event, 'topologias')">Topologias</button>
     </div>
 
+    <div id="cabos" class="tab-content active">
+        <h2 style="text-align:center;">Tipos de Conexões no Chão de Fábrica</h2>
+        <div class="cards-container">
+            
+            <div class="card" onclick="toggleCard('detalhe-par')">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=500&q=80" alt="Cabo de Rede Par Trançado">
+                <h3>Par Trançado</h3>
+                <p class="click-hint">(Clique para ler)</p>
+                <div id="detalhe-par" class="card-details">
+                    <strong>Onde é usado:</strong> Muito comum para conectar painéis elétricos, CLPs (Controladores Lógicos Programáveis) e sensores a curtas distâncias dentro das células de manufatura. É a base das redes Ethernet Industriais (como PROFINET e EtherNet/IP).
+                </div>
+            </div>
+
+            <div class="card" onclick="toggleCard('detalhe-fibra')">
+                <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=500&q=80" alt="Cabos de Fibra Óptica">
+                <h3>Fibra Óptica</h3>
+                <p class="click-hint">(Clique para ler)</p>
+                <div id="detalhe-fibra" class="card-details">
+                    <strong>Onde é usado:</strong> Ideal para o "backbone" (espinha dorsal) da fábrica e para interligar galpões diferentes. Como a fábrica tem grandes motores que geram ruído elétrico, a fibra óptica é a salvação, pois transmite dados por luz e é 100% imune a interferências eletromagnéticas.
+                </div>
+            </div>
+
+            <div class="card" onclick="toggleCard('detalhe-wireless')">
+                <img src="https://images.unsplash.com/photo-1544146038-7f99951b1406?auto=format&fit=crop&w=500&q=80" alt="Roteador e Antenas">
+                <h3>Wireless (Sem fio)</h3>
+                <p class="click-hint">(Clique para ler)</p>
+                <div id="detalhe-wireless" class="card-details">
+                    <strong>Onde é usado:</strong> Fundamental para a Indústria 4.0. Usado em robôs móveis autônomos (AGVs) que transportam peças pelo galpão, ferramentas inteligentes sem fio e sensores instalados em partes móveis de máquinas onde um cabo se romperia com facilidade.
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="topologias" class="tab-content">
+        <h2 style="text-align:center;">Como organizamos a rede?</h2>
+        <div class="topo-buttons">
+            <button class="btn active" id="btn-estrela" onclick="showTopo('estrela')">Layout em Estrela</button>
+            <button class="btn" id="btn-barramento" onclick="showTopo('barramento')">Layout em Barramento</button>
+        </div>
+
+        <div id="estrela" class="topo-details" style="display: flex;">
+            <img src="https://images.unsplash.com/photo-1551808525-51a94da548ce?auto=format&fit=crop&w=800&q=80" alt="Switch Central de Rede">
+            <div class="topo-text">
+                <h3>Layout em Estrela</h3>
+                <p>Nesse formato, todos os equipamentos (robôs, CLPs, IHMs) são conectados diretamente a um equipamento central, chamado Switch. O painel elétrico funciona como o "coração" da célula.</p>
+                <ul>
+                    <li><span class="pro">Vantagem:</span> Fácil de encontrar problemas. Se um cabo quebrar, apenas aquela máquina específica perde o sinal. O restante da fábrica continua operando.</li>
+                    <li><span class="con">Desvantagem:</span> Gasta muito mais cabos. Além disso, se o Switch central queimar ou perder energia, toda a rede daquela área cai de uma vez só.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="barramento" class="topo-details" style="display: none;">
+            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80" alt="Esteira e cabos em linha">
+            <div class="topo-text">
+                <h3>Layout em Barramento (Linha)</h3>
+                <p>Neste modelo de daisy-chain (corrente de margarida), o cabo entra na Máquina A, sai da Máquina A e entra na Máquina B, e assim por diante. É muito comum ao longo de grandes esteiras transportadoras.</p>
+                <ul>
+                    <li><span class="pro">Vantagem:</span> Economiza muita fiação (infraestrutura mais limpa e barata) e é extremamente fácil ir adicionando novos sensores ao longo de uma esteira de produção.</li>
+                    <li><span class="con">Desvantagem:</span> Se o cabo se romper entre a Máquina B e C, todas as máquinas dali para frente (C, D, E...) ficam isoladas e perdem comunicação com o controlador.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para alternar as abas principais
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.className += " active";
+        }
+
+        // Função para mostrar detalhes dos cabos na Aba 1
+        function toggleCard(id) {
+            var el = document.getElementById(id);
+            if (el.style.display === "block") {
+                el.style.display = "none";
+            } else {
+                el.style.display = "block";
+            }
+        }
+
+        // Função para alternar topologias na Aba 2
+        function showTopo(topoName) {
+            // Esconde todas as topologias
+            document.getElementById('estrela').style.display = 'none';
+            document.getElementById('barramento').style.display = 'none';
+            
+            // Tira classe active dos botões
+            document.getElementById('btn-estrela').classList.remove('active');
+            document.getElementById('btn-barramento').classList.remove('active');
+
+            // Mostra a escolhida e ativa o botão
+            document.getElementById(topoName).style.display = 'flex';
+            document.getElementById('btn-' + topoName).classList.add('active');
+        }
+    </script>
 </body>
 </html>
