@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto de Rede Modbus</title>
 
+    <style>
+        /* 1. ESTILOS GERAIS DA PÁGINA */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte mais moderna */
+            background-color: #eef2f5; /* Fundo levemente acinzentado */
+            color: #2c3e50; /* Cinza escuro para facilitar a leitura */
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 2. CAIXA PRINCIPAL (Container) */
+        .container {
+            max-width: 1000px; /* Limita a largura para não esticar muito em telas grandes */
+            margin: 0 auto; /* Centraliza a caixa na tela */
+            background: #ffffff;
+            border-radius: 12px; /* Deixa as pontas da caixa arredondadas */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Sombra elegante */
+            overflow: hidden; /* Garante que nada vaze das bordas arredondadas */
+        }
+
+        /* 3. CABEÇALHO (Header) */
+        header {
+            background-color: #2980b9; /* Fundo azul para o topo */
+            color: white; /* Texto branco */
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* 4. SEÇÃO DE CONTEÚDO */
+        .content {
+            padding: 30px;
+        }
+
+        .intro {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* 5. ESTRUTURA DOS CRITÉRIOS (Flexbox para alinhar imagem e texto) */
+        .criterio-card {
+            display: flex; /* Coloca os elementos lado a lado */
+            align-items: center; /* Centraliza verticalmente */
+            gap: 20px; /* Espaço entre a imagem e o texto */
+            margin-bottom: 30px; /* Espaço entre os blocos de critérios */
+            padding: 20px;
+            background-color: #f8f9fa; /* Fundo bem clarinho para cada bloco */
+            border-left: 5px solid #3498db; /* Linha azul decorativa na esquerda */
+            border-radius: 8px;
+        }
+
+        /* Inverte a ordem de alguns blocos para o layout ficar dinâmico (ziguezague) */
+        .criterio-card.reverse {
+            flex-direction: row-reverse;
+            border-left: none;
+            border-right: 5px solid #e67e22; /* Linha laranja decorativa na direita */
+        }
+
+        /* 6. ESTILOS DAS IMAGENS DENTRO DOS CARTÕES */
+        .criterio-card img {
+            width: 250px; /* Largura fixa para as imagens */
+            height: 180px; /* Altura fixa */
+            object-fit: cover; /* Corta a imagem sem distorcer para caber no tamanho */
+            border-radius: 8px; /* Arredonda as pontas das imagens */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 7. ESTILOS DO TEXTO DENTRO DOS CARTÕES */
+        .criterio-texto {
+            flex: 1; /* Faz o texto ocupar todo o espaço restante ao lado da imagem */
+        }
+
+        .criterio-texto h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        ul {
+            line-height: 1.5;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* 8. ADAPTAÇÃO PARA CELULARES (Responsividade) */
+        @media (max-width: 768px) {
+            .criterio-card, .criterio-card.reverse {
+                flex-direction: column; /* Empilha a imagem em cima do texto no celular */
+                text-align: center;
+            }
+            .criterio-card img {
+                width: 100%; /* Imagem ocupa 100% da largura no celular */
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <h1>Topologia de Redes Industriais</h1>
+            <p>Escolhendo o caminho físico ideal para o protocolo Modbus</p>
+        </header>
+
+        <section class="content">
+            
+            <p class="intro">
+                Imagine que você foi contratado para projetar a infraestrutura de comunicação de uma planta industrial. 
+                Os sensores e controladores possuem o mesmo padrão, "falam" a mesma língua (o protocolo <strong>Modbus</strong>), 
+                mas agora você precisa decidir qual "estrada" física (Topologia) eles usarão para enviar essas mensagens. 
+                Para fazer a escolha certa, você deve analisar o cenário com base nos seguintes critérios:
+            </p>
+
+            <article class="criterio-card">
+                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Painel central controlando vários equipamentos">
+                
+                <div class="criterio-texto">
+                    <h2>1. Quantidade de Dispositivos</h2>
+                    <ul>
+                        <li><strong>Cenário A:</strong> Você precisa conectar apenas <strong>um</strong> computador diretamente a <strong>um</strong> único sensor de bancada.</li>
+                        <li><strong>Cenário B:</strong> Você precisa que um único controlador central (Mestre) monitore <strong>vários</strong> motores e medidores de energia (Escravos) espalhados pelo galpão.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="criterio-card reverse">
+                <img src="https://images.unsplash.com/photo-1621360841013-c76831f1e35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cabos industriais percorrendo longas distâncias">
+                
+                <div class="criterio-texto">
+                    <h2>2. Distância da Instalação</h2>
+                    <ul>
+                        <li>Os equipamentos estão próximos uns dos outros (dentro de um mesmo painel ou a menos de <strong>15 metros</strong>)?</li>
+                        <li>Ou os equipamentos estão em pontos distantes, exigindo cabos que percorrem <strong>centenas de metros</strong> (até 1200m)?</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="criterio-card">
+                <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Indústria pesada com faíscas e motores potentes">
+                
+                <div class="criterio-texto">
+                    <h2>3. Nível de Interferência (Ruído Elétrico)</h2>
+                    <ul>
+                        <li>O ambiente é limpo, como um escritório ou laboratório?</li>
+                        <li>Ou existem motores potentes, inversores de frequência e cabos de alta tensão por perto, que geram "faíscas" invisíveis de interferência magnética no sinal?</li>
+                    </ul>
+                </div>
+            </article>
+
+        </section>
+    </div>
+
+</body>
+</html>
